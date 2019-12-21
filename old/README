@@ -1,0 +1,40 @@
+Harrison Kerr
+
+Description:
+  The library libmythreads.a gives user thread functionality to some other
+  program. It provides functions for handling threads similar to pthreads,
+  including both cooperative and preemptive thread switching. The library
+  allows programs to use locks that imitate mutex locks and condition variables
+  to go with the locks.
+
+KNOWN PROBLEMS
+Cannot handle creation of more than INT_MAX threads throughout the duration of
+  the program because the counter for thread ids does not reuse values from
+  threads that have completed execution.
+
+DESIGN
+I found it helpful to break down the large thread functions into the several
+  components of which they are made up. This also made it so that I only had to
+  call swapcontext once in a wrapper function (switchThread) that handled all
+  of the technicalities of how swapcontext has to be called.
+I'm happy that I could come up with a way to implement condition variables that
+  is much simpler than using actual queues or some type of ordered list of
+  threads. By using an int for each condition variable that tells the size of
+  a theoretical queue, each Node just has to save information about which
+  condition variable it is waiting for. When threadWait is called, the Node
+  of the calling thread adds itself to the "queue" by saving its position
+  (the size of the queue) and incrementing the size of the queue. Signal does
+  the opposite, decrementing the condition variable (queue size) and the
+  position of every Node that is waiting for that condition variable.
+
+Resources
+  Jacob Sorber himself
+  Operating Systems class lectures
+  Operating Systems class git repository
+  man pages
+  Piazza
+  Stack Overflow
+  Linked List examples https://www.learn-c.org/en/Linked_lists
+  Condition Variables https://docs.microsoft.com/en-us/windows/desktop/sync/condition-variables
+  Condition Variable explanation https://www.youtube.com/watch?v=VAV2h1GdgE0
+  Condition Variables and Semaphores https://www.microsoft.com/en-us/research/wp-content/uploads/2004/12/ImplementingCVs.pdf
